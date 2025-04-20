@@ -71,4 +71,5 @@ def on_ice_candidate(data):
 
 if __name__ == "__main__":
     print("DEBUG: Starting Flask server on http://0.0.0.0:5000")
-    socketio.run(app, host="0.0.0.0", port=5000, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=False)
+    
