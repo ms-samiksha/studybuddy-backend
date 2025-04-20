@@ -45,7 +45,7 @@ def on_leave_room(data):
     room_id = data['roomId']
     user_id = data['userId']
     leave_room(room_id)
-    emit('user-left', {'userId': user_id}, room=room_id)
+    emit('user-left', {'userId': user_id}, room=room_id, include_self=False)
     print(f"DEBUG: User {user_id} left room {room_id}")
 
 @socketio.on('offer')
@@ -53,21 +53,24 @@ def on_offer(data):
     emit('offer', {
         'userId': data['userId'],
         'sdp': data['sdp']
-    }, room=data['roomId'])
+    }, room=data['roomId'], include_self=False)
+    print(f"DEBUG: Offer from user {data['userId']} in room {data['roomId']}")
 
 @socketio.on('answer')
 def on_answer(data):
     emit('answer', {
         'userId': data['userId'],
         'sdp': data['sdp']
-    }, room=data['roomId'])
+    }, room=data['roomId'], include_self=False)
+    print(f"DEBUG: Answer from user {data['userId']} in room {data['roomId']}")
 
 @socketio.on('ice-candidate')
 def on_ice_candidate(data):
     emit('ice-candidate', {
         'userId': data['userId'],
         'candidate': data['candidate']
-    }, room=data['roomId'])
+    }, room=data['roomId'], include_self=False)
+    print(f"DEBUG: ICE candidate from user {data['userId']} in room {data['roomId']}")
 
 if __name__ == "__main__":
     print("DEBUG: Starting Flask server on http://0.0.0.0:5000")
