@@ -5,8 +5,8 @@ import os
 from face.capture_face import capture_face
 
 app = Flask(__name__)
-CORS(app, resources={r"/capture_face": {"origins": ["http://localhost", "http://127.0.0.1:5500", "https://your-app.netlify.app"]}})
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost", "http://127.0.0.1:5500", "https://your-app.netlify.app"])
+CORS(app, resources={r"/capture_face": {"origins": ["http://localhost", "http://127.0.0.1:5500", "https://dainty-longma-fd7059.netlify.app"]}})
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost", "http://127.0.0.1:5500", "https://dainty-longma-fd7059.netlify.app"])
 
 @app.route("/capture_face", methods=["POST"])
 def capture_face_endpoint():
@@ -72,4 +72,3 @@ def on_ice_candidate(data):
 if __name__ == "__main__":
     print("DEBUG: Starting Flask server on http://0.0.0.0:5000")
     socketio.run(app, host="0.0.0.0", port=5000, debug=False)
-    
