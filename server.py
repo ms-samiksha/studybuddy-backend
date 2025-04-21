@@ -1,3 +1,8 @@
+# Ensure eventlet monkey patching is applied before any other imports
+import eventlet
+eventlet.monkey_patch()
+
+# Now import other modules
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -6,7 +11,7 @@ from face.capture_face import capture_face
 
 app = Flask(__name__)
 CORS(app, resources={r"/capture_face": {"origins": ["http://localhost", "http://127.0.0.1:5500", "https://dainty-longma-fd7059.netlify.app"]}})
-socketio = SocketIO(app, cors_allowed_origins=[
+socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins=[
     "http://localhost",
     "http://127.0.0.1:5500",
     "https://dainty-longma-fd7059.netlify.app"
@@ -80,5 +85,5 @@ def on_ice_candidate(data):
     print(f"DEBUG: Broadcasted ICE candidate to room {data['roomId']}")
 
 if __name__ == "__main__":
-    print("DEBUG: Starting Flask server on http://0.0.0.0:5000")
-    socketio.run(app, host="0.0.0.0", port=5000, debug=False)
+    print("DEBUG: Starting Flask server on http://0.0.0.0:10000")
+    socketio.run(app, host="0.0.0.0", port=10000, debug=False)
