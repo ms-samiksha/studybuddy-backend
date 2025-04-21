@@ -2,44 +2,16 @@
 import eventlet
 eventlet.monkey_patch()
 
-# Now import other modules
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+# Import modules
+from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
-import os
-from face.capture_face import capture_face
 
 app = Flask(__name__)
-CORS(app, resources={r"/capture_face": {"origins": ["http://localhost", "http://127.0.0.1:5500", "https://dainty-longma-fd7059.netlify.app"]}})
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins=[
     "http://localhost",
     "http://127.0.0.1:5500",
     "https://dainty-longma-fd7059.netlify.app"
 ])
-
-@app.route("/capture_face", methods=["POST"])
-def capture_face_endpoint():
-    print("DEBUG: Received request to /capture_face")
-    data = request.get_json()
-    user_id = data.get("user_id")
-    username = data.get("username")
-
-    if not user_id or not username:
-        print(f"DEBUG: Error: Missing user_id or username (user_id: {user_id}, username: {username})")
-        return jsonify({"error": "User ID and username are required"}), 400
-
-    try:
-        print(f"DEBUG: Calling capture_face for user_id: {user_id}, username: {username}")
-        image_path, error = capture_face(user_id, username)
-        if image_path and os.path.exists(image_path):
-            print(f"DEBUG: capture_face succeeded, image saved at: {image_path}")
-            return jsonify({"message": "Face captured and saved", "image_path": image_path}), 200
-        else:
-            print(f"DEBUG: Error: capture_face failed - {error}")
-            return jsonify({"error": error or "Failed to capture face, no image saved"}), 500
-    except Exception as e:
-        print(f"DEBUG: Error in capture_face_endpoint: {str(e)}")
-        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @socketio.on('join-room')
 def on_join_room(data):
